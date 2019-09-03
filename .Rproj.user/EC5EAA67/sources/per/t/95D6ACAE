@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1567515465234.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4190856574",
+    "id" : "95D6ACAE",
+    "lastKnownWriteTime" : 1567517767,
+    "last_content_update" : 1567517767824,
+    "path" : "~/GitHub/ABAKUS-particle-counter/display_cumulative_distribution.R",
+    "project_path" : "display_cumulative_distribution.R",
+    "properties" : {
+        "cursorPosition" : "35,6",
+        "scrollLine" : "5",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
