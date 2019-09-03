@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1567511997868.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "BE18594F",
+    "lastKnownWriteTime" : 1567513406,
+    "last_content_update" : 1567513455398,
+    "path" : "~/GitHub/ABAKUS-particle-counter/import_abakus_data.r",
+    "project_path" : "import_abakus_data.r",
+    "properties" : {
+        "cursorPosition" : "3,46",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
