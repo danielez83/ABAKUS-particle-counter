@@ -15,7 +15,7 @@ size_classes <- c(0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.9,3.2,3.
 # -----------------------------------------------------------------
 
 # Calculate cumulative distribution
-cumulative_distribution <- colSums(abakus_data[start_row_index:last_index,start_column_index:last_column_index])
+cumulative_distribution <- colSums(abakus_data[start_row_index:last_row_index,start_column_index:last_column_index])
 
 # Display cumulative distribution as barplot
 barplot(cumulative_distribution,
