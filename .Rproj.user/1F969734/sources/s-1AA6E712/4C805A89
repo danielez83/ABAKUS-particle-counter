@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1567515288849.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3807383223",
+    "id" : "4C805A89",
+    "lastKnownWriteTime" : 1567515337,
+    "last_content_update" : 1567515337550,
+    "path" : "~/GitHub/ABAKUS-particle-counter/conteggi.R",
+    "project_path" : "conteggi.R",
+    "properties" : {
+        "cursorPosition" : "0,13",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
