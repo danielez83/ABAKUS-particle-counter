@@ -31,15 +31,12 @@ endcolumn<-length(abakus_data)-1
 flow_rate <- 2/60 #ml/s
 volume<-flow_rate* (endrow-startrow) #vol impostato sulla pompa (ml)
 
-#dichiarazione matrice
+#dichiarazione nuova matrice
 matr<-abakus_data[startrow:endrow, startcolumn:endcolumn]
 
 #CONTEGGI/ml
 
-sum(matr$X0.8)/flow 
-
-sum(matr)/volume
-matr/flow_rate
-sum(matr$X0.8)/volume
+paste("particle concentration: ", sum(matr/volume), "pt/ml") #tot particelle/ml
+sum(matr$X0.8)/volume #pt/ml per canale
 conteggi_ml<-matr/flow_rate
-paste("particle concentration: ", sum(matr/volume), "pt/ml")
+
