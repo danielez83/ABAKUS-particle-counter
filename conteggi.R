@@ -10,7 +10,13 @@
 #             Per ciascun canale dimensionale, la somma dei conteggi delle particelle nel tempo
 #             viene divisa per il flow rate (ml/s) per ottenere pt/ml lette dall'abakus.
 
-file_name <- "test_data.txt" # ABACUS file name
+
+
+# file_name <- "test_data.txt" # Select ABACUS file name manually
+# Select file using Windows Prompt
+file_name <- choose.files(default = "", caption = "Select file",
+                          multi = FALSE, filters = Filters,
+                          index = nrow(Filters))
 skip_lines = 6; #number of lines to skip
 
 # Import text file and convert to a data frame
@@ -35,8 +41,10 @@ volume<-flow_rate* (endrow-startrow) #vol impostato sulla pompa (ml)
 matr<-abakus_data[startrow:endrow, startcolumn:endcolumn]
 
 #CONTEGGI/ml
+# Prompt total particle concentration
+paste("Total particles concentration: ", sum(matr/volume), "pt/ml") #tot particelle/ml
+# Prompt particles concentration by size
+paste("Particles concentration size",variable.names(matr), "(mm):", colSums(matr/flow_rate), "pt/ml")
 
-paste("particle concentration: ", sum(matr/volume), "pt/ml") #tot particelle/ml
-sum(matr$X0.8)/volume #pt/ml per canale
-conteggi_ml<-matr/flow_rate
-
+# sum(matr$X0.8)/volume #pt/ml per canale
+# conteggi_ml<-matr/flow_rate
