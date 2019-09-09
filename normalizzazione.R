@@ -41,11 +41,12 @@ second.step<-sum(matr)/volume
 normalization<-first.step/second.step
 rm(col.sums, first.step,second.step)
 #---------------------------------------------------------------
-#matr2 #non si riesce a fare operazioni sulla seconda matrice.
+#matr2 #repete for n matrices
 col.sums_2 <- apply(matrix2,2,sum) #sum of values for each column of the matrix
 first.step_2<-col.sums_2/volume #pt/ml
 second.step_2<-sum(matrix2)/volume
 normalization_2<-first.step_2/second.step_2
+rm(col.sums_2,first.step_2,second.step_2)
 
 # Define size classes
 size_classes <- c(0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.9,3.2,3.5,3.9,4.3,4.8,5.3,5.8,6.4,7.1,7.8,8.6,9.5,10.5,11.6,12.8,14.1,15.5)
@@ -56,7 +57,10 @@ x  <- size_classes
 y1 <- normalization
 y2 <- normalization_2
 plot(x,y1,type="l",col="firebrick2",log = "xy",
+     main="Cumulative distribution",
      ylab = "Normalized Counts",
      xlab = expression(paste("Diameter (", mu, "m)")),
      lwd=2)
-lines(x,y2,col="darkred")
+lines(x,y2,col="blue", lty=5, lwd=1)
+legend("topright", legend=c("Line 1", "Line 2"),
+       col=c("red", "blue"), lty=1:5, cex=0.8)
