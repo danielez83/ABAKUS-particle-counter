@@ -235,9 +235,16 @@ R_square<-R_square[2:16] #ch. 3.0: ch. 45
 
 y1<-R_square
 x1<-new_size_classes[1:15] #keep only the first 15ch. (from 3.0 to 45)
-
-plot(y1~x1,pch=20, col="deeppink3", 
-     ylab = "R2",
-     xlab = "channel") 
-title("Scatterplot R2 per channel", outer=TRUE, line=-1, cex.main=1.5)
-axis(3, at=seq(3, 45, by=3), labels = T)
+df<-data.frame(x1,y1)
+# plot(y1~x1,pch=20, col="deeppink3", 
+#      ylab = "R2",
+#      xlab = "channel") 
+# title("Scatterplot R2 per channel", outer=TRUE, line=-1, cex.main=1.5)
+# axis(3, at=seq(3, 45, by=3), labels = T)
+library(ggplot2)
+qplot(x1, y1) + stat_smooth()+
+labs(x = "channel")+
+labs(y = "R2")+ 
+coord_cartesian(ylim = (0:1))+
+labs(title = "R2 per channel")+ 
+theme(plot.title = element_text(hjust = 0.5))
