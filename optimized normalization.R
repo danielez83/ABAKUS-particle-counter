@@ -47,9 +47,9 @@ for (i in 1:length((filelist))) {
 } 
 filelist <- filelist[na_vec_bol]
 
-if (na_FLAG > 0){
-  stop("Script interrupted", call. = FALSE)
-}
+# if (na_FLAG > 0){
+#   stop("Script interrupted", call. = FALSE)
+# }
 
 #SETTINGS for the list of matrices
 #Delete matrices with less than 300 rows (5 min acquisition) and make the remanent comparable. 
@@ -83,7 +83,6 @@ normalization<-data.frame(size_classes, normalization)
 rm(col.sums,first.step,second.step,n,nr,new_filenames)  
 
 #Create different dataframes for each kind of measurement (to plot them separately)
-install.packages("tidyverse")
 library("tidyverse", lib.loc="~/R/win-library/3.5")
 
 df_STD<-select(normalization,contains("STD"))
@@ -200,51 +199,85 @@ fit3 <- lm(y~poly(x,3,raw=TRUE))
 xx <- seq(0,210, length=50)
 lines(xx, predict(fit3, data.frame(x=xx)), col="blue") #ADD BEST LINE FIT 
 
-matplot(col.sums[,1],col.sums[,2:5],type='l', col = rainbow(5), log="xy",
-        xlab = expression(paste("Diameter (", mu, "m)")),
-        ylab= "Test (pt/ml)",
-        lwd=1, lty=1)
-axis(1, at=seq(3, 47, by=3), labels = FALSE)
-legend("topright",colnames(col.sums[,2:5]),col=rainbow(5),cex=0.6,fill=rainbow(5))
-
-# #PLOT pt/ml per channel 3.0 
-# x<-STD_mass[1:3]
-# y<-t(col.sums[1,2:4])
-# plot(y~x, pch=20, col="green", main="pt/ml per channel", 
-#      ylab = "pt/ml",
-#      xlab = "FD069 mass(mg)")
-# abline(lm(t(col.sums[1,2:4])~STD_mass[1:3]), col="darkgreen")
-# modelX<-lm(y~x)
-# summary(modelX)$r.square
-# text(paste("R2= ",summary(modelX)$r.square,sep = " "), x = 150, y = 5000)
-
 matrix<-data.frame(t(col.sums[,2:4])) 
 colnames(matrix) <- new_size_classes
 matrix<-data.frame(STD_mass[1:3], matrix)
 
-#Create an R2 vector
+#Create an R2 vector 
 R_square<-sapply(matrix[-ncol(matrix)],function(x){
   mylm<-lm(x~matrix$STD_mass.1.3.)
   theR2<-summary(mylm)$r.squared
   return(theR2)
 })
 
+#create slope array
+slope<-sapply(matrix[-ncol(matrix)],function(x){
+  mylm<-lm(x~matrix$STD_mass.1.3.)
+  slope_val<-mylm$coefficients[2]
+  return(slope_val)
+})
+
+#control slope
+R_square[slope<=0]=0
+
 #omit na values from the R2 vector
 R_square <- na.omit(R_square)
 R_square<-R_square[2:16] #ch. 3.0: ch. 45
 
-y1<-R_square
+#PLOT diameters vs R2
 x1<-new_size_classes[1:15] #keep only the first 15ch. (from 3.0 to 45)
-df<-data.frame(x1,y1)
-# plot(y1~x1,pch=20, col="deeppink3", 
-#      ylab = "R2",
-#      xlab = "channel") 
-# title("Scatterplot R2 per channel", outer=TRUE, line=-1, cex.main=1.5)
-# axis(3, at=seq(3, 45, by=3), labels = T)
-library(ggplot2)
-qplot(x1, y1) + stat_smooth()+
-labs(x = "channel")+
-labs(y = "R2")+ 
-coord_cartesian(ylim = (0:1))+
-labs(title = "R2 per channel")+ 
-theme(plot.title = element_text(hjust = 0.5))
+y1<-R_square
+df<-data.frame(x1,y1) 
+plot(y1~x1,pch=20, col="deeppink3", 
+      ylab = "R2",
+      xlab = expression(paste("Diameter (", mu, "m)")),
+ title("Scatterplot R2 per channel", outer=T, line=1, cex.main=1.5))
+ axis(3, at=seq(3, 45, by=3), labels = T)
+
+#Put down the remanent outliers in order to fit the best polyf. to the scatterplot 
+ R_square<-data.frame(R_square)
+ for(i in 1:14){
+   if((R_square[i,]==0.0000000))
+     R_square[i+1,]<- 0.0000000
+ } 
+
+#GGPLOT WITH POLYLN and equation 
+library("ggpmisc", lib.loc="~/R/win-library/3.5")
+colnames(scatterplot_R2_diameters)<-c("Diameters (um)","R2")
+formula <- y ~ poly(x, 8, raw = TRUE)
+ggplot(scatterplot_R2_diameters, aes(x, y)) +  
+  labs(x = "Diameter (um)")+
+  labs(y = "R2")+ coord_cartesian(ylim = (0:1))+
+  geom_point() +
+  labs(title = "R2 per channel")+ theme(plot.title = element_text(hjust = 0.5))+
+  geom_smooth(method = "lm", formula = formula) +
+  stat_poly_eq(aes(label =  paste(stat(eq.label), stat(adj.rr.label), sep = "~~~~")),
+               formula = formula, rr.digits = 3, coef.digits = 2, parse = TRUE)
+
+#TESTs PLOT (WITHOUT milliQ)
+matplot(col.sums[,1],col.sums[,2:4],type='l', col = rainbow(4), log="xy",
+        xlab = expression(paste("Diameter (", mu, "m)")),
+        ylab= "Test (pt/ml)",
+        lwd=1, lty=1)
+axis(1, at=seq(3, 47, by=3), labels = FALSE)
+legend("topright",colnames(col.sums[,2:4]),col=rainbow(4),cex=0.6,fill=rainbow(4))
+
+
+#ARRAY CORRECTION
+#Extraction of the first 15 diameters (3 to 45 um) from the matrix df
+matrix_3to45um<-subset(matrix, select = X3:X45)
+R_square<-array(R_square$R_square)
+#Create a df of correction, multiplying R2 values for pt/ml per channel. 
+correction<-data.frame(mapply(`*`,matrix_3to45um,R_square))
+#Subtract the correction from the intial values (pt/ml per channel)
+matrix_corrected<-data.frame(mapply(`-`,matrix_3to45um,correction))
+matrix_corrected<-data.frame(t(matrix_corrected[,1:15])) 
+matrix_corrected<-data.frame(x1, matrix_corrected)
+colnames(matrix_corrected)<-c("Diameters (um)","FD069_20kpt/ml","FD069_3,5kpt/ml","FD069_7kpt/ml")
+#plot new results
+matplot(matrix_corrected[,1],matrix_corrected[,2:4],type='l', col = rainbow(3), log="xy",
+        xlab = expression(paste("Diameter (", mu, "m)")),
+        ylab= "corrected tests (pt/ml)",
+        lwd=1, lty=1)
+axis(1, at=seq(3, 47, by=3), labels = FALSE)
+legend("topright",colnames(matrix_corrected[,2:4]),col=rainbow(3),cex=0.6,fill=rainbow(5))
